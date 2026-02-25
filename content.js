@@ -3,6 +3,9 @@ const BUNDLED_FONTS = {
   "JetBrains Mono Nerd Font": "fonts/JetBrainsMonoNerdFont-Regular.woff2",
   "Fira Code": "fonts/FiraCode-Regular.woff2",
   "Open Sans": "fonts/OpenSans-Regular.woff2",
+  "Literata": "fonts/Literata-Regular.woff2",
+  "Charter": "fonts/Charter-Regular.woff2",
+  "Source Sans 3": "fonts/SourceSans3-Regular.woff2",
 };
 
 function getDomain() {

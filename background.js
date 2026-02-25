@@ -1,4 +1,4 @@
-const BUNDLED_FONTS = ["JetBrains Mono Nerd Font", "Fira Code", "Open Sans"];
+const BUNDLED_FONTS = ["JetBrains Mono Nerd Font", "Fira Code", "Open Sans", "Literata", "Charter", "Source Sans 3"];
 
 function getDomain(url) {
   try {
