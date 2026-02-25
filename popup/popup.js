@@ -1,4 +1,4 @@
-const BUNDLED_FONT = "JetBrains Mono Nerd Font";
+const BUNDLED_FONTS = ["JetBrains Mono Nerd Font", "Fira Code", "Open Sans"];
 
 const domainEl = document.getElementById("domain");
 const fontSelect = document.getElementById("fontSelect");
@@ -41,7 +41,7 @@ async function init() {
 
   const settings = siteSettings[currentDomain];
   if (settings) {
-    fontSelect.value = settings.font || BUNDLED_FONT;
+    fontSelect.value = settings.font || BUNDLED_FONTS[0];
     isEnabled = settings.enabled;
   }
 
@@ -52,11 +52,13 @@ async function init() {
 function populateFontSelect(customFonts) {
   fontSelect.innerHTML = "";
 
-  // Bundled font
-  const opt = document.createElement("option");
-  opt.value = BUNDLED_FONT;
-  opt.textContent = BUNDLED_FONT;
-  fontSelect.appendChild(opt);
+  // Bundled fonts
+  for (const name of BUNDLED_FONTS) {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    fontSelect.appendChild(opt);
+  }
 
   // Custom fonts
   for (const name of Object.keys(customFonts)) {
@@ -79,7 +81,7 @@ function updateToggleButton() {
 
 function updateRemoveButton() {
   const selected = fontSelect.value;
-  removeCustomBtn.hidden = selected === BUNDLED_FONT;
+  removeCustomBtn.hidden = BUNDLED_FONTS.includes(selected);
 }
 
 function showStatus(text) {
@@ -129,9 +131,6 @@ fontUpload.addEventListener("change", async (e) => {
   if (!file) return;
 
   const name = file.name.replace(/\.(woff2|ttf)$/i, "");
-  const ext = file.name.split(".").pop().toLowerCase();
-  const mimeType = ext === "woff2" ? "font/woff2" : "font/ttf";
-
   const reader = new FileReader();
   reader.onload = async () => {
     const base64 = reader.result; // already a data URI from readAsDataURL
@@ -160,14 +159,14 @@ fontUpload.addEventListener("change", async (e) => {
 // Delete custom font
 removeCustomBtn.addEventListener("click", async () => {
   const name = fontSelect.value;
-  if (name === BUNDLED_FONT) return;
+  if (BUNDLED_FONTS.includes(name)) return;
 
   const { customFonts = {} } = await chrome.storage.local.get("customFonts");
   delete customFonts[name];
   await chrome.storage.local.set({ customFonts });
 
   populateFontSelect(customFonts);
-  fontSelect.value = BUNDLED_FONT;
+  fontSelect.value = BUNDLED_FONTS[0];
   updateRemoveButton();
   showStatus(`Deleted "${name}"`);
 
@@ -176,7 +175,7 @@ removeCustomBtn.addEventListener("click", async () => {
     await chrome.runtime.sendMessage({
       type: "updateSettings",
       domain: currentDomain,
-      font: BUNDLED_FONT,
+      font: BUNDLED_FONTS[0],
       enabled: true,
     });
   }

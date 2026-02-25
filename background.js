@@ -1,4 +1,4 @@
-const BUNDLED_FONT = "JetBrains Mono Nerd Font";
+const BUNDLED_FONTS = ["JetBrains Mono Nerd Font", "Fira Code", "Open Sans"];
 
 function getDomain(url) {
   try {
@@ -84,7 +84,10 @@ async function handleUpdateSettings({ domain, font, enabled }) {
   if (enabled && font) {
     siteSettings[domain] = { font, enabled: true };
   } else {
-    siteSettings[domain] = { font: siteSettings[domain]?.font || font, enabled: false };
+    siteSettings[domain] = {
+      font: siteSettings[domain]?.font || font,
+      enabled: false,
+    };
   }
 
   await chrome.storage.local.set({ siteSettings });
@@ -99,8 +102,9 @@ async function handleUpdateSettings({ domain, font, enabled }) {
 
   if (enabled && font) {
     let fontSrc = null;
-    if (font !== BUNDLED_FONT) {
-      const { customFonts = {} } = await chrome.storage.local.get("customFonts");
+    if (!BUNDLED_FONTS.includes(font)) {
+      const { customFonts = {} } =
+        await chrome.storage.local.get("customFonts");
       fontSrc = customFonts[font] || null;
     }
     await chrome.tabs.sendMessage(tab.id, {

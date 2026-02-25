@@ -1,5 +1,9 @@
 const STYLE_ID = "retyped-font-override";
-const BUNDLED_FONT = "JetBrains Mono Nerd Font";
+const BUNDLED_FONTS = {
+  "JetBrains Mono Nerd Font": "fonts/JetBrainsMonoNerdFont-Regular.woff2",
+  "Fira Code": "fonts/FiraCode-Regular.woff2",
+  "Open Sans": "fonts/OpenSans-Regular.woff2",
+};
 
 function getDomain() {
   return location.hostname;
@@ -13,6 +17,9 @@ function removeOverride() {
 function applyOverride(fontName, fontSrc) {
   removeOverride();
 
+  const style = document.createElement("style");
+  style.id = STYLE_ID;
+
   let fontFaceRule;
   if (fontSrc) {
     // Custom font with base64 data URI
@@ -25,26 +32,24 @@ function applyOverride(fontName, fontSrc) {
     `;
   } else {
     // Bundled font — use extension URL
-    const fontUrl = chrome.runtime.getURL(
-      "fonts/JetBrainsMonoNerdFont-Regular.ttf"
-    );
+    const fontPath = BUNDLED_FONTS[fontName];
+    const fontUrl = chrome.runtime.getURL(fontPath);
     fontFaceRule = `
       @font-face {
-        font-family: "${BUNDLED_FONT}";
-        src: url("${fontUrl}") format("truetype");
+        font-family: "${fontName}";
+        src: url("${fontUrl}") format("woff2");
         font-display: swap;
       }
     `;
   }
 
-  const style = document.createElement("style");
-  style.id = STYLE_ID;
   style.textContent = `
     ${fontFaceRule}
     * {
       font-family: "${fontName}" !important;
     }
   `;
+
   document.head.appendChild(style);
 }
 
@@ -62,7 +67,7 @@ async function checkAndApply() {
   }
 
   const fontName = settings.font;
-  const fontSrc = fontName === BUNDLED_FONT ? null : customFonts[fontName];
+  const fontSrc = fontName in BUNDLED_FONTS ? null : customFonts[fontName];
   applyOverride(fontName, fontSrc);
 }
 

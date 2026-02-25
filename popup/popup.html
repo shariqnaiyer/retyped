@@ -1,27 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Retyped</h1>
-    <p class="domain" id="domain">—</p>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Retyped</h1>
+      <p class="domain" id="domain">—</p>
 
-    <label for="fontSelect">Font</label>
-    <select id="fontSelect"></select>
+      <label for="fontSelect">Font</label>
+      <select id="fontSelect"></select>
 
-    <label for="fontUpload">Upload font (.woff2 / .ttf)</label>
-    <input type="file" id="fontUpload" accept=".woff2,.ttf">
+      <label for="fontUpload">Upload font (.woff2 / .ttf)</label>
+      <input type="file" id="fontUpload" accept=".woff2,.ttf" />
 
-    <div class="actions">
-      <button id="toggleBtn" disabled>Apply</button>
-      <button id="removeCustomBtn" class="secondary" hidden>Delete font</button>
+      <div class="actions">
+        <button id="toggleBtn" disabled>Apply</button>
+        <button id="removeCustomBtn" class="secondary" hidden>
+          Delete font
+        </button>
+      </div>
+
+      <p class="status" id="status"></p>
     </div>
-
-    <p class="status" id="status"></p>
-  </div>
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>
