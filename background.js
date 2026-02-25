@@ -25,6 +25,33 @@ async function updateBadge(tabId, domain) {
   }
 }
 
+// Inject content script into a tab, ignoring errors if already injected
+async function ensureContentScript(tabId) {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["content.js"],
+    });
+  } catch {
+    // Script may already be injected, or tab is a chrome:// page
+  }
+}
+
+// On tab load, inject content script if the domain has saved settings
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status !== "complete") return;
+
+  const domain = getDomain(tab.url);
+  await updateBadge(tabId, domain);
+
+  if (!domain) return;
+
+  const { siteSettings = {} } = await chrome.storage.local.get("siteSettings");
+  if (siteSettings[domain]?.enabled) {
+    await ensureContentScript(tabId);
+  }
+});
+
 // Update badge when a tab is activated
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
@@ -36,21 +63,13 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   }
 });
 
-// Update badge and re-inject on navigation
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status !== "complete") return;
-
-  const domain = getDomain(tab.url);
-  await updateBadge(tabId, domain);
-});
-
 // Handle messages from popup
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "getActiveTab") {
     chrome.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       sendResponse(tabs[0] || null);
     });
-    return true; // async response
+    return true;
   }
 
   if (msg.type === "updateSettings") {
@@ -70,14 +89,15 @@ async function handleUpdateSettings({ domain, font, enabled }) {
 
   await chrome.storage.local.set({ siteSettings });
 
-  // Notify the active tab's content script
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id) return { ok: true };
 
   await updateBadge(tab.id, domain);
 
+  // Inject content script first (may not be present yet)
+  await ensureContentScript(tab.id);
+
   if (enabled && font) {
-    // Get font source for custom fonts
     let fontSrc = null;
     if (font !== BUNDLED_FONT) {
       const { customFonts = {} } = await chrome.storage.local.get("customFonts");
