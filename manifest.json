@@ -3,7 +3,8 @@
   "name": "Retyped",
   "version": "1.0.0",
   "description": "Change the font of any website. Toggle custom fonts per-site with JetBrains Mono Nerd Font bundled, or upload your own.",
-  "permissions": ["activeTab", "storage", "scripting", "tabs"],
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
