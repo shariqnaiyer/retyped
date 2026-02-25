@@ -1,4 +1,11 @@
-const BUNDLED_FONTS = ["JetBrains Mono Nerd Font", "Fira Code", "Open Sans", "Literata", "Charter", "Source Sans 3"];
+const BUNDLED_FONTS = [
+  "JetBrains Mono Nerd Font",
+  "Fira Code",
+  "Open Sans",
+  "Literata",
+  "Charter",
+  "Source Sans 3",
+];
 
 const domainEl = document.getElementById("domain");
 const fontSelect = document.getElementById("fontSelect");

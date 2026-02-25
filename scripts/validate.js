@@ -87,7 +87,10 @@ function extractObjectKeys(src) {
   const match = src.match(/BUNDLED_FONTS\s*=\s*\{([^}]+)\}/s);
   if (!match) return null;
   return (
-    match[1].match(/"([^"]+)"\s*:/g)?.map((s) => s.match(/"([^"]+)"/)[1]) || []
+    match[1].match(/(?:"([^"]+)"|(\w+))\s*:/g)?.map((s) => {
+      const quoted = s.match(/"([^"]+)"/);
+      return quoted ? quoted[1] : s.replace(/\s*:$/, "");
+    }) || []
   );
 }
 
