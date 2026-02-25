@@ -1,6 +1,8 @@
 # Retyped
 
-Chrome extension that lets you change the font on any website. Pick a font, click Apply, and it sticks — per site, across reloads.
+I wanted to read a book online and the font was more suited to a printed book than an online one. I couldn't find a simple extension to change it, so I built Retyped.
+
+Retyped is a Chrome extension that lets you change the font on any website. Pick a font, click Apply, and it sticks — per site, across reloads.
 
 ## Features
 
